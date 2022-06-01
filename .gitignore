@@ -99,3 +99,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Webstorm local project settings
+.idea/
