@@ -9,34 +9,10 @@
     - `entrypoint` is optional if already defined in Dockerfile
     ```yaml
     $artifact:
-        dockerfile: Dockerfile
-        entrypoint: node
-        cmd: ['build/egg2caterpillar.js']
+        install_packages:
+            - git
     ```
-    ```yaml
-    $artifact:
-        dockerfile: Dockerfile
-        entrypoint: ts-node
-        cmd: ['src/egg2caterpillar.js']
-    ```
-    ```yaml
-    $artifact:
-        dockerfile: Dockerfile
-        entrypoint: ts-node
-        cmd: ['-e', 'require("./index").egg2caterpillar()']
-    ```
-    ```yaml
-    $artifact:
-        dockerfile: Dockerfile
-        entrypoint: python
-        cmd: ['src/egg2caterpillar.py']
-    ```
-    ```yaml
-    $artifact:
-        dockerfile: Dockerfile
-        entrypoint: bash         
-        cmd: ['run.sh']
-    ```
+  
 - index.ts
     - contains the transformer functions referenced by the transformer contracts
     ```typescript
@@ -58,6 +34,7 @@
 
 ## Working with input
 - input is transformer-bundle source
+- L1 transformer should contain the base source code for node
 - read from /input/artifact/
 - read contracts from /input/artifact/contracts.yml
 - parse contracts.yml file
@@ -65,15 +42,23 @@
     - if transformer:
         - create working directory
         - write the transformer contract (balena.yml)
-        - write Dockerfile
-        - write entrypoint index.ts
-        - write transformer-bundle to src/
+        - assemble source
+          - copy bundle/src into base source code for node
+          - install package.json globally
+          - build source with the wrapper (`npm run build`)
+        - build dockerfile
+          - copy assembled source into /app/src
+          - use template Dockerfile then append install_packages
+          - append standard entrypoint index.ts
     - if type:
         - 
 
 ## For all output contracts
 - add a version field
     - version should be the same as input contract (transformer-bundle) version
+- consider individualized versioning for transformer & types
+  - diff transformer images to detect change
+  - compare type with the previous version of the same type
 
 ## Create a type contract
 - Force the slug
@@ -84,12 +69,19 @@
         schema:
             ...
     ```
+    ```yaml
+    slug: `${loop}/${handle}`    
+    type: type
+    data: 
+        schema:
+            ...
+    ```
 
 ## Create a transformer contract
 - if `input.filter` is not set:
     - generate `input.filter` based on `input.$ref` using a JSON Schema that matches on type
-    - Q: how will we know the slug before type is created?
-    - A: have to guess the slug for now and hope we get lucky
+    - Q: how will we know the slug before type is created? --
+    - A:  We just use the handle
     - OR A: we will set the slug when generating the type and use what we set, and if it gets rejected
     - add nonce OR complain loudly
     ```yaml
@@ -115,3 +107,12 @@ slug: `${type}-${slugified(name)}`
 slug: `${loop}/${type}/${handle}`
 
 
+
+
+- Launch with just typescript support
+- bash stuff: install_packages then call script from typescript
+- Look into Repl.it
+- Camel-case the function name then snake-case the handle
+- Design-time script that generates interfaces in typescript
+- index.ts file should export transformer functions with Camel-case of transformer handle
+- No env var for input manifest. Should use absolute paths for manifest & artifacts
