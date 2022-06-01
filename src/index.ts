@@ -9,7 +9,7 @@ import { createContract } from './build';
 import { ProcessedContractDefinition } from './types';
 
 const inputArtifactPath = 'input/artifact';
-// const outputArtifactPath = 'output/artifact';
+const outputArtifactPath = 'output/artifact';
 
 export async function transformBundle(
 	manifest: InputManifest,
@@ -25,7 +25,7 @@ export async function transformBundle(
 			manifest.input.contract.version,
 			manifest.input.contract.loop,
 		);
-		const artifactPath = '';
+		const artifactPath = `${outputArtifactPath}/${rawContract.handle}.tar`;
 		// TODO: build transformer source
 		// const artifactPath =
 		// 	rawContract.type === 'transformer'
