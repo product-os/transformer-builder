@@ -16,7 +16,7 @@
 - index.ts
     - contains the transformer functions referenced by the transformer contracts
     ```typescript
-    export async function egg2caterpillar (input: InputManifest<EggContract>): Promise<Result<CaterpillarContract>[]> {
+    export default async function egg2Caterpillar (input: InputManifest<EggContract>): Promise<Result<CaterpillarContract>[]> {
     // TODO: implement transformation
     }
     ```

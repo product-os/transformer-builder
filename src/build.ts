@@ -96,26 +96,9 @@ async function isValidTargetPlatform(
 async function toJSONSchema(
 	contract: BundledTypeContract,
 ): Promise<JSONSchema> {
-	const schema: JSONSchema = {
+	return {
 		type: 'object',
 		required: ['type'],
-	};
-	if (contract.data !== undefined) {
-		if (contract.data.schema !== undefined) {
-			return Object.assign(schema, {
-				properties: {
-					data: contract.data.schema,
-					handle: {
-						type: 'string',
-					},
-					type: {
-						pattern: `${contract.handle}@*`,
-					},
-				},
-			});
-		}
-	}
-	return Object.assign(schema, {
 		properties: {
 			handle: {
 				type: 'string',
@@ -124,5 +107,5 @@ async function toJSONSchema(
 				pattern: `${contract.handle}@*`,
 			},
 		},
-	});
+	};
 }
