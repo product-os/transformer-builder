@@ -1,6 +1,3 @@
-// import * as fs from 'fs';
-// import { YAML } from 'yaml';
-
 ## How to define a transformer bundle of contracts
 - contracts.yml
     - can contain `type: type` or `type: transformer` contracts
