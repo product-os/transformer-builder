@@ -1,19 +1,18 @@
-FROM balenalib/amd64-alpine-node:16.13.2 as builder
+FROM docker:20.10.17 as build
+
+RUN apk --no-cache add \
+    nodejs \
+    npm
 
 COPY . /usr/src/
 
 WORKDIR /usr/src
 
-RUN npm ci && npm run build
-
-
-FROM balenalib/amd64-alpine-node:16.13.2 as runtime
-
-COPY --from=builder /usr/src/build /app
-COPY --from=builder /usr/src/node_modules /app/node_modules
-
-WORKDIR /app
+RUN npm install \
+    && npm cache verify \
+    && npm run build \
+    && npm run test
 
 ENTRYPOINT ["node"]
 
-CMD ["./src/index.js"]
+CMD ["./build/src/index.js"]
