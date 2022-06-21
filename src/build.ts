@@ -7,6 +7,11 @@ import {
 import { ContractDefinition } from '@balena/transformer-sdk';
 import { JSONSchema6 as JSONSchema } from 'json-schema';
 import * as skhema from 'skhema';
+import { TransformerContract } from '@balena/transformer-sdk/build/types';
+import { $, chalk, fs, path } from 'zx';
+import { render } from 'mustache';
+import { createWorkDir } from './io';
+import { exec } from 'child_process';
 
 export async function createContract(
 	inputContract: ContractDefinition,
@@ -18,9 +23,9 @@ export async function createContract(
 		handle: inputContract.handle,
 		type:
 			inputContract.type === 'transformer' ? 'transformer@1.0.0' : 'type@1.0.0',
-		loop: bundleLoop ? bundleLoop : '',
+		loop: bundleLoop || '',
 		version: bundleVersion,
-		data: inputContract.data,
+		data: inputContract.data || {},
 	} as ProcessedContractDefinition;
 	if (inputContract.type === 'transformer') {
 		const transformerContract = inputContract as BundledTransformerContract;
@@ -96,26 +101,9 @@ async function isValidTargetPlatform(
 async function toJSONSchema(
 	contract: BundledTypeContract,
 ): Promise<JSONSchema> {
-	const schema: JSONSchema = {
+	return {
 		type: 'object',
 		required: ['type'],
-	};
-	if (contract.data !== undefined) {
-		if (contract.data.schema !== undefined) {
-			return Object.assign(schema, {
-				properties: {
-					data: contract.data.schema,
-					handle: {
-						type: 'string',
-					},
-					type: {
-						pattern: `${contract.handle}@*`,
-					},
-				},
-			});
-		}
-	}
-	return Object.assign(schema, {
 		properties: {
 			handle: {
 				type: 'string',
@@ -124,5 +112,86 @@ async function toJSONSchema(
 				pattern: `${contract.handle}@*`,
 			},
 		},
-	});
+	};
+}
+
+export async function buildTransformer(
+	contract: TransformerContract,
+	inputArtifactPath: string,
+	outputArtifactPath: string,
+): Promise<string> {
+	exec(`mkdir -p ${outputArtifactPath}`);
+	const sourcePath = await buildSource(contract, inputArtifactPath);
+	const tag = await buildImage(contract, sourcePath);
+	return await saveImage(tag, outputArtifactPath);
+}
+
+async function buildSource(
+	contract: TransformerContract,
+	artifactPath: string,
+): Promise<string> {
+	//     Consider build secrets:
+	//     if (buildSecrets) {
+	//         const tmpDir = await fs.promises.mkdtemp('/tmp/build-secrets-');
+	//         for (const key of Object.keys(buildSecrets)) {
+	//             const secretPath = path.join(tmpDir, key);
+	//             const secretContent = Buffer.from(buildSecrets[key], 'base64');
+	//             await fs.promises.writeFile(secretPath, secretContent);
+	//             args.push('--secret', `id=${key},src=${secretPath}`);
+	//         }
+	//     }
+	//     //
+	$.verbose = false;
+	const sourcePath = await createWorkDir();
+	await $`cp -a ${artifactPath}/* ${sourcePath}`;
+	await renderTemplate(
+		path.join(__dirname, 'templates/index.ts.mustache'),
+		path.join(sourcePath, 'src/index.ts'),
+		contract,
+	);
+	await renderTemplate(
+		path.join(__dirname, 'templates/Dockerfile.mustache'),
+		path.join(sourcePath, 'Dockerfile'),
+		contract,
+	);
+	await $`rimraf ${sourcePath}/balena.yml ${sourcePath}/contracts.yml`;
+	return sourcePath;
+}
+
+async function renderTemplate(
+	templatePath: string,
+	targetFilePath: string,
+	contract: TransformerContract,
+): Promise<void> {
+	const indexTemplate = await fs.readFile(templatePath);
+	await fs.writeFile(
+		targetFilePath,
+		render(indexTemplate.toString('utf8'), contract),
+	);
+}
+
+async function buildImage(
+	contract: TransformerContract,
+	sourcePath: string,
+): Promise<string> {
+	const tag = contract.handle || contract.slug;
+	const buildPlatform = contract.data.targetPlatform || 'linux/amd64';
+	const args = [`build`, '--platform', buildPlatform, `--tag`, tag, sourcePath];
+	console.log(chalk.blue(`Starting docker build for ${tag}.`));
+	const buildProcess = $`docker ${args}`;
+	// buildProcess.stdout.pipe(process.stdout);
+	// buildProcess.stderr.pipe(process.stderr);
+	await buildProcess;
+	console.log(chalk.blue('Done.'));
+	return tag;
+}
+
+async function saveImage(tag: string, artifactPath: string): Promise<string> {
+	console.log(chalk.blue(`Saving docker image ${tag}.`));
+	const imagePath = path.join(artifactPath, `${tag}.tar`);
+	const args = ['save', tag, '-o', imagePath];
+	await $`mkdir -p ${artifactPath}`;
+	await $`docker ${args}`;
+	console.log(chalk.blue('Done.'));
+	return imagePath;
 }

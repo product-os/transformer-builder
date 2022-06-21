@@ -1,7 +1,6 @@
-handle: l1-transformer
 name: l1-transformer
 type: type-product-os-t-service-source@1.5.1
-version: 0.1.0
+version: 0.2.0
 data:
   $transformer: {}
   platforms:

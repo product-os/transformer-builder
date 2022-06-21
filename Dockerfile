@@ -1,19 +1,22 @@
-FROM balenalib/amd64-alpine-node:16.13.2 as builder
+FROM docker:dind as base
 
-COPY . /usr/src/
+ENV DOCKER_HOST=unix:///var/run/docker.sock
 
-WORKDIR /usr/src
+RUN apk --no-cache add \
+    nodejs \
+    npm
 
-RUN npm ci && npm run build
+WORKDIR /usr/src/l1-transformer
 
+COPY . /usr/src/l1-transformer
 
-FROM balenalib/amd64-alpine-node:16.13.2 as runtime
+RUN npm install \
+    && npm cache verify \
+    && npm run build \
+    && chmod u+x scripts/entrypoint.sh
 
-COPY --from=builder /usr/src/build /app
-COPY --from=builder /usr/src/node_modules /app/node_modules
+FROM base as runtime
 
-WORKDIR /app
+ENTRYPOINT ["scripts/entrypoint.sh"]
 
-ENTRYPOINT ["node"]
-
-CMD ["./src/index.js"]
+CMD ["node", "./build/src/index.js"]

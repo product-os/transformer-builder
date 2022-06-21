@@ -16,7 +16,7 @@
 - index.ts
     - contains the transformer functions referenced by the transformer contracts
     ```typescript
-    export async function egg2caterpillar (input: InputManifest<EggContract>): Promise<Result<CaterpillarContract>[]> {
+    export default async function egg2Caterpillar (input: InputManifest<EggContract>): Promise<Result<CaterpillarContract>[]> {
     // TODO: implement transformation
     }
     ```
@@ -39,19 +39,23 @@
 - read contracts from /input/artifact/contracts.yml
 - parse contracts.yml file
 - for each contract
-    - if transformer:
-        - create working directory
-        - write the transformer contract (balena.yml)
-        - assemble source
-          - copy bundle/src into base source code for node
-          - install package.json globally
-          - build source with the wrapper (`npm run build`)
-        - build dockerfile
-          - copy assembled source into /app/src
-          - use template Dockerfile then append install_packages
-          - append standard entrypoint index.ts
-    - if type:
-        - 
+    - If contract contains a transformer:
+      - Set the contract version to the bundle version
+      - Create a work directory
+      - Write the transformer contract (balena.yml) into the work directory
+      - Assemble source
+        - Copy bundle/src into base source code for node
+        - Install package.json globally
+        - generate the wrapper
+        - build source with the wrapper (`npm run build`)
+      - build dockerfile
+        - copy assembled source into /app/src
+        - use template Dockerfile then append install_packages
+        - append standard entrypoint index.ts
+      - Append the transformer contract into the results.
+    - If contract contains a type:
+      - Set the contract version to the bundle version 
+      - Append the type contract into the results.
 
 ## For all output contracts
 - add a version field
