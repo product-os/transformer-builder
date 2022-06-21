@@ -14,10 +14,8 @@ describe('utils.createWorkDir', function () {
 
 describe('utils.loadContracts', function () {
 	it('should load all contracts', async function () {
-		expect(
-			typeof (await utils.readContracts(
-				'test/test-bundle-build/input/artifact',
-			)),
-		).toBe('object');
+		expect(typeof (await utils.readContracts('/input/artifact'))).toBe(
+			'object',
+		);
 	});
 });

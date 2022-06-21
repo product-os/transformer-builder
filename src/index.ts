@@ -10,9 +10,8 @@ import { buildTransformer, createContract } from './build';
 import { ProcessedContractDefinition } from './types';
 import { TransformerContract } from '@balena/transformer-sdk/build/types';
 
-// TODO: mock absolute path for local tests
-const inputArtifactPath = 'test/test-bundle-build/input/artifact';
-const outputArtifactPath = 'test/test-bundle-build/output/artifact';
+const inputArtifactPath = '/input/artifact';
+const outputArtifactPath = '/output/artifact';
 
 export async function transformBundle(
 	manifest: InputManifest,
@@ -29,8 +28,6 @@ export async function transformBundle(
 			manifest.input.contract.loop,
 		);
 		const result = { contract };
-		// const artifactPath = `${outputArtifactPath}/${rawContract.handle}.tar`;
-		// TODO: build transformer source
 		if (rawContract.type === 'transformer') {
 			const artifactPath = await buildTransformer(
 				contract as TransformerContract,
@@ -42,11 +39,7 @@ export async function transformBundle(
 
 		results.push(result);
 	}
-	// console.log(JSON.stringify({results}));
 	return results;
 }
-
-// TODO:
-// startDockerDaemon();
 
 transform(transformBundle);

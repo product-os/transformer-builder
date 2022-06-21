@@ -11,6 +11,7 @@ import { TransformerContract } from '@balena/transformer-sdk/build/types';
 import { $, chalk, fs, path } from 'zx';
 import { render } from 'mustache';
 import { createWorkDir } from './io';
+import { exec } from 'child_process';
 
 export async function createContract(
 	inputContract: ContractDefinition,
@@ -119,6 +120,7 @@ export async function buildTransformer(
 	inputArtifactPath: string,
 	outputArtifactPath: string,
 ): Promise<string> {
+	exec(`mkdir -p ${outputArtifactPath}`);
 	const sourcePath = await buildSource(contract, inputArtifactPath);
 	const tag = await buildImage(contract, sourcePath);
 	return await saveImage(tag, outputArtifactPath);
@@ -141,8 +143,7 @@ async function buildSource(
 	//     //
 	$.verbose = false;
 	const sourcePath = await createWorkDir();
-	const artifactSourcePath = path.join(__dirname, '..', artifactPath);
-	await $`cp -a ${artifactSourcePath}/* ${sourcePath}`;
+	await $`cp -a ${artifactPath}/* ${sourcePath}`;
 	await renderTemplate(
 		path.join(__dirname, 'templates/index.ts.mustache'),
 		path.join(sourcePath, 'src/index.ts'),
@@ -176,7 +177,7 @@ async function buildImage(
 	const tag = contract.handle || contract.slug;
 	const buildPlatform = contract.data.targetPlatform || 'linux/amd64';
 	const args = [`build`, '--platform', buildPlatform, `--tag`, tag, sourcePath];
-	console.log(chalk.blue('Starting docker build.'));
+	console.log(chalk.blue(`Starting docker build for ${tag}.`));
 	const buildProcess = $`docker ${args}`;
 	// buildProcess.stdout.pipe(process.stdout);
 	// buildProcess.stderr.pipe(process.stderr);
@@ -191,7 +192,6 @@ async function saveImage(tag: string, artifactPath: string): Promise<string> {
 	const args = ['save', tag, '-o', imagePath];
 	await $`mkdir -p ${artifactPath}`;
 	await $`docker ${args}`;
-	console.log((await $`ls -lh ${artifactPath}`).stdout);
 	console.log(chalk.blue('Done.'));
 	return imagePath;
 }

@@ -13,18 +13,12 @@ describe('convertContract', function () {
 	const manifest = {
 		input: {
 			contract: yaml.load(
-				fs.readFileSync(
-					'test/test-bundle-build/input/artifact/balena.yml',
-					'utf8',
-				),
+				fs.readFileSync('/input/artifact/balena.yml', 'utf8'),
 			) as ProcessedContractDefinition,
 		},
 	};
 	const contracts: ContractDefinition[] = yaml.loadAll(
-		fs.readFileSync(
-			'test/test-bundle-build/input/artifact/contracts.yml',
-			'utf8',
-		),
+		fs.readFileSync('/input/artifact/contracts.yml', 'utf8'),
 	) as ContractDefinition[];
 	const transformerContractWithRef: BundledTransformerContract = {
 		handle: 'egg-2-caterpillar',

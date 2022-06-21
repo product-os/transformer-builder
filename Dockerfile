@@ -1,17 +1,22 @@
-FROM docker:20.10.17 as build
+FROM docker:dind as base
+
+ENV DOCKER_HOST=unix:///var/run/docker.sock
 
 RUN apk --no-cache add \
     nodejs \
     npm
 
-COPY . /usr/src/
+WORKDIR /usr/src/l1-transformer
 
-WORKDIR /usr/src
+COPY . /usr/src/l1-transformer
 
 RUN npm install \
     && npm cache verify \
-    && npm run build
+    && npm run build \
+    && chmod u+x scripts/entrypoint.sh
 
-ENTRYPOINT ["node"]
+FROM base as runtime
 
-CMD ["./build/src/index.js"]
+ENTRYPOINT ["scripts/entrypoint.sh"]
+
+CMD ["node", "./build/src/index.js"]
