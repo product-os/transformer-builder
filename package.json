@@ -1,7 +1,7 @@
 {
   "name": "l1-transformer",
   "type": "commonjs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Builds transformer bundle into types and transformers",
   "homepage": "https://github.com/product-os/l1-transformer#readme",
   "main": "build/index.js",
@@ -54,6 +54,6 @@
     "zx": "^4.3.0"
   },
   "versionist": {
-    "publishedAt": "2022-06-21T13:50:54.133Z"
+    "publishedAt": "2022-07-26T10:02:56.019Z"
   }
 }
