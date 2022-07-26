@@ -11,7 +11,13 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  REPOSITORY_NAME: ${{ github.repository }}
+  SHA: ${{ github.sha }}
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
 
 jobs:
   build-and-push-image:
@@ -35,12 +41,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+        run: |
+          LOOP=$(echo ${REPOSITORY_NAME} | cut -d'@' -f1)
+          TYPE=$(yq '.type' balena.yml)
+          HANDLE=$(echo ${REPOSITORY_NAME} | cut -d'@' -f2)
+          REPO=${REGISTRY}/${LOOP}/${LOOP}-${TYPE}-${HANDLE}
+          VERSION=$(yq '.version' balena.yml)-${SHA}
+          docker build . --tag ${REPO}:${VERSION}
+          docker push ${REPO}:${VERSION}
