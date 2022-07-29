@@ -8,17 +8,19 @@ import { ContractDefinition } from '@balena/transformer-sdk';
 import * as yaml from 'js-yaml';
 import * as fs from 'fs';
 
+const artifactPath = process.env.ARTIFACT_PATH || 'test/input/artifact';
+
 jest.setTimeout(60 * 1000);
 describe('convertContract', function () {
 	const manifest = {
 		input: {
 			contract: yaml.load(
-				fs.readFileSync('/input/artifact/balena.yml', 'utf8'),
+				fs.readFileSync(`${artifactPath}/balena.yml`, 'utf8'),
 			) as ProcessedContractDefinition,
 		},
 	};
 	const contracts: ContractDefinition[] = yaml.loadAll(
-		fs.readFileSync('/input/artifact/contracts.yml', 'utf8'),
+		fs.readFileSync(`${artifactPath}/contracts.yml`, 'utf8'),
 	) as ContractDefinition[];
 	const transformerContractWithRef: BundledTransformerContract = {
 		handle: 'egg-2-caterpillar',

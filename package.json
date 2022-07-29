@@ -1,7 +1,7 @@
 {
   "name": "l1-transformer",
   "type": "commonjs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Builds transformer bundle into types and transformers",
   "homepage": "https://github.com/product-os/l1-transformer#readme",
   "main": "build/index.js",
@@ -22,7 +22,7 @@
     "build": "npm run clean && tsc",
     "docker:build": "docker build -f Dockerfile -t l1-transformer:build .",
     "docker:build-test": "npm run docker:build && npm run docker:test",
-    "docker:test": "docker run -it --rm --privileged --mount source=$(pwd)/test,target=/usr/src/l1-transformer/test,type=bind --mount source=$(pwd)/test/test-bundle-build/input,target=/input,type=bind l1-transformer:build npm run test",
+    "docker:test": "docker run -it --rm --privileged --env ARTIFACT_PATH=/input/artifact --mount source=$(pwd)/test,target=/usr/src/l1-transformer/test,type=bind --mount source=$(pwd)/test/input,target=/input,type=bind l1-transformer:build npm run test",
     "lint": "balena-lint src",
     "lint:fix": "balena-lint --fix src",
     "test": "jest",
@@ -54,6 +54,6 @@
     "zx": "^4.3.0"
   },
   "versionist": {
-    "publishedAt": "2022-06-21T13:50:54.133Z"
+    "publishedAt": "2022-07-29T06:27:31.937Z"
   }
 }
