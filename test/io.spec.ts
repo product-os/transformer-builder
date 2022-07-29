@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as utils from '../src/io';
 
+const artifactPath = process.env.ARTIFACT_PATH || 'test/input/artifact';
+
 describe('utils.createWorkDir', function () {
 	it('should create a valid path', async function () {
 		const tempDir = await utils.createWorkDir();
@@ -14,8 +16,6 @@ describe('utils.createWorkDir', function () {
 
 describe('utils.loadContracts', function () {
 	it('should load all contracts', async function () {
-		expect(typeof (await utils.readContracts('/input/artifact'))).toBe(
-			'object',
-		);
+		expect(typeof (await utils.readContracts(artifactPath))).toBe('object');
 	});
 });

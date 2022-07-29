@@ -1,0 +1,26 @@
+{
+  "name": "example-transformer-source",
+  "private": true,
+  "version": "0.2.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf build",
+    "build": "npm run clean && tsc",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@balena/transformer-sdk": "^0.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.7.3"
+  },
+  "versionist": {
+    "publishedAt": "2022-05-03T02:22:40.541Z"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1"
+  }
+}

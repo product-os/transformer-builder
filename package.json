@@ -22,7 +22,7 @@
     "build": "npm run clean && tsc",
     "docker:build": "docker build -f Dockerfile -t l1-transformer:build .",
     "docker:build-test": "npm run docker:build && npm run docker:test",
-    "docker:test": "docker run -it --rm --privileged --mount source=$(pwd)/test,target=/usr/src/l1-transformer/test,type=bind --mount source=$(pwd)/test/test-bundle-build/input,target=/input,type=bind l1-transformer:build npm run test",
+    "docker:test": "docker run -it --rm --privileged --env ARTIFACT_PATH=/input/artifact --mount source=$(pwd)/test,target=/usr/src/l1-transformer/test,type=bind --mount source=$(pwd)/test/input,target=/input,type=bind l1-transformer:build npm run test",
     "lint": "balena-lint src",
     "lint:fix": "balena-lint --fix src",
     "test": "jest",
