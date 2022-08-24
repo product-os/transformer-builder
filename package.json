@@ -42,15 +42,16 @@
     "lint-staged": "^11.2.6",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.4",
-    "ts-node": "^9.1.1",
     "typescript": "^4.7.3"
   },
   "dependencies": {
     "@balena/transformer-sdk": "^0.4.0",
+    "@balena/transformers-core": "^0.11.0-remove-oras-8c9302e16f33d8d71acd725dcad3567300a7e294",
     "js-yaml": "^4.1.0",
     "mustache": "^4.2.0",
     "rimraf": "^3.0.2",
     "skhema": "^6.0.6",
+    "ts-node": "^9.1.1",
     "zx": "^4.3.0"
   },
   "versionist": {
