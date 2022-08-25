@@ -1,6 +1,13 @@
 import { JSONSchema6 as JSONSchema } from 'json-schema';
 import { ContractData } from '@balena/jellyfish-types/build/core';
 import { ContractDefinition } from '@balena/transformer-sdk';
+import { ContractType } from '@balena/transformers-core';
+
+export interface TransformerBundleType extends ContractType {
+	type: 'transformer-bundle';
+	typeVersion: '1.0.0';
+	data: {};
+}
 
 export interface BundledTransformerContract
 	extends ContractDefinition<{

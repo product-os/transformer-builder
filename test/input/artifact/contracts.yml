@@ -1,0 +1,67 @@
+handle: egg
+type: type
+---
+handle: caterpillar
+type: type
+data:
+  schema:
+    type: object
+    required:
+      - numLegs
+    properties:
+      numLegs:
+        type: number
+---
+handle: chrysalis
+type: type
+---
+handle: butterfly
+type: type
+data:
+  schema:
+    type: object
+    required:
+      - numWings
+    properties:
+      numWings:
+        type: number
+---
+handle: egg-2-caterpillar
+type: transformer
+data:
+  input:
+    $ref: egg
+  output:
+    $ref: caterpillar
+---
+handle: caterpillar-2-chrysalis
+type: transformer
+data:
+#  targetPlatform: linux/arm64  # targetPlatform defaults to `linux/amd64` when not specified
+  input:
+    $ref: caterpillar
+  output:
+    $ref: chrysalis
+---
+handle: chrysalis-2-butterfly
+type: transformer
+data:
+  input:
+    $ref: chrysalis
+#    filter:  # Use a JSON schema to filter for contracts with specific properties
+#      type: object
+#      properties:
+#        handle:
+#          type: string
+#        type:
+#          pattern: 'chrysalis@*'
+#        data:
+#          type: object
+#          properties:
+#            hasCocoon:
+#              const: true
+#      required:
+#        - type
+#        - data
+  output:
+    $ref: butterfly

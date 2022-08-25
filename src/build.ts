@@ -11,7 +11,6 @@ import { TransformerContract } from '@balena/transformer-sdk/build/types';
 import { $, chalk, fs, path } from 'zx';
 import { render } from 'mustache';
 import { createWorkDir } from './io';
-import { exec } from 'child_process';
 
 export async function createContract(
 	inputContract: ContractDefinition,
@@ -120,7 +119,7 @@ export async function buildTransformer(
 	inputArtifactPath: string,
 	outputArtifactPath: string,
 ): Promise<string> {
-	exec(`mkdir -p ${outputArtifactPath}`);
+	await $`mkdir -p ${outputArtifactPath}`;
 	const sourcePath = await buildSource(contract, inputArtifactPath);
 	const tag = await buildImage(contract, sourcePath);
 	return await saveImage(tag, outputArtifactPath);
