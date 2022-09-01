@@ -6,17 +6,15 @@ RUN apk --no-cache add \
     nodejs \
     npm
 
-WORKDIR /usr/src/l1-transformer
+COPY . /usr/src/transformer
 
-COPY . /usr/src/l1-transformer
+WORKDIR /usr/src/transformer
 
 RUN npm install \
     && npm cache verify \
     && npm run build \
     && chmod u+x scripts/entrypoint.sh
 
-FROM base as runtime
-
 ENTRYPOINT ["scripts/entrypoint.sh"]
 
-CMD ["node", "./build/src/index.js"]
+CMD ["node", "./build/src/transformer-entrypoint.js"]

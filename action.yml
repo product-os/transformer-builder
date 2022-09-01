@@ -1,5 +1,36 @@
 name: 'L1 Action'
 description: 'Transforms a transformer bundle to transformers'
+
+on:
+  workflow_call:
+    secrets:
+      REGISTRY_USERNAME:
+        description: "Personal access token (PAT) for the GitHub service account with admin/owner permissions"
+        required: false
+      REGISTRY_PASSWORD:
+        description: "GPG private key exported with `gpg --armor --export-secret-keys ...` to sign commits"
+        required: false
+    inputs:
+      DRYRUN:
+        description: "Disables artifact uploading to the registry when `DRYRUN` is set to `true`."
+        type: boolean
+        required: false
+        default: false
+      REGISTRY_HOSTNAME:
+        description: "The hostname of the Docker registry where artifacts and images will be uploaded to."
+        type: boolean
+        required: false
+        default: 'ghcr.io'
+      REGISTRY_PROTOCOL:
+        description: "The protocol used to upload artifacts or images to the Docker registry."
+        type: choice
+        required: false
+        default: 'https'
+        options:
+        - https
+        - http
+        - ssh
+
 runs:
   using: "composite"
   steps:

@@ -1,4 +1,4 @@
-name: Tests
+name: Bootstrap transformer-builder
 
 on:
   pull_request:
@@ -16,5 +16,9 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-      - name: L1 Action
-        uses: product-os/l1-transformer@make-github-action
+      - name: Transform
+        env:
+          REGISTRY_USERNAME: ${{ github.event.pull_request.user.login }}
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash bootstrap.sh

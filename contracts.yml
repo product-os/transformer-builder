@@ -1,0 +1,16 @@
+---
+handle: transformer-builder
+type: transformer
+version: 1.0.0
+data:
+  input:
+    filter:
+      type: object
+      required:
+        - type
+        - version
+      properties:
+        type:
+          pattern: transformer-bundle@*
+        version:
+          type: string

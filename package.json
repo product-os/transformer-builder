@@ -1,18 +1,18 @@
 {
-  "name": "l1-transformer",
+  "name": "transformer-builder",
   "type": "commonjs",
   "version": "0.2.0",
   "description": "Builds transformer bundle into types and transformers",
-  "homepage": "https://github.com/product-os/l1-transformer#readme",
+  "homepage": "https://github.com/product-os/transformer-builder#readme",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/product-os/transformer-bundle2transformer.git"
+    "url": "git+https://github.com/product-os/transformer-builder.git"
   },
   "bugs": {
-    "url": "https://github.com/product-os/transformer-bundle2transformer/issues"
+    "url": "https://github.com/product-os/transformer-builder/issues"
   },
   "files": [
     "build/"
@@ -20,9 +20,9 @@
   "scripts": {
     "clean": "rimraf build",
     "build": "npm run clean && tsc",
-    "docker:build": "docker build -f Dockerfile -t l1-transformer:build .",
+    "docker:build": "docker build -f Dockerfile -t transformer-builder:build .",
     "docker:build-test": "npm run docker:build && npm run docker:test",
-    "docker:test": "docker run -it --rm --privileged --env ARTIFACT_PATH=/input/artifact --mount source=$(pwd)/test,target=/usr/src/l1-transformer/test,type=bind --mount source=$(pwd)/test/input,target=/input,type=bind l1-transformer:build npm run test",
+    "docker:test": "docker run -it --rm --privileged --env ARTIFACT_PATH=/input/artifact --mount source=$(pwd)/test,target=/usr/src/transformer/test,type=bind --mount source=$(pwd)/test/fixture,target=/input,type=bind transformer-builder:build npm run test",
     "lint": "balena-lint src",
     "lint:fix": "balena-lint --fix src",
     "test": "jest",
@@ -45,11 +45,8 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
-    "@balena/transformer-sdk": "^0.4.0",
-    "@balena/transformers-core": "^0.11.0-remove-oras-8c9302e16f33d8d71acd725dcad3567300a7e294",
+    "@balena/transformers-core": "^0.12.1-export-js-yaml-0f137d956d8abb6906ad43a1ad44833869d48182",
     "js-yaml": "^4.1.0",
-    "mustache": "^4.2.0",
-    "rimraf": "^3.0.2",
     "skhema": "^6.0.6",
     "ts-node": "^9.1.1",
     "zx": "^4.3.0"

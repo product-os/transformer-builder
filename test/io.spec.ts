@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as utils from '../src/io';
 
-const artifactPath = process.env.ARTIFACT_PATH || 'test/input/artifact';
+const artifactPath = process.env.ARTIFACT_PATH || 'test/fixture/artifact';
 
 describe('utils.createWorkDir', function () {
 	it('should create a valid path', async function () {

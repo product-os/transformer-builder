@@ -4,7 +4,7 @@ COPY . /usr/src/
 
 WORKDIR /usr/src
 
-RUN ls -lh && cat src/index.ts && npm install && npm run build
+RUN npm install && npm run build
 
 FROM balenalib/amd64-alpine-node:16.13.2 as runtime
 

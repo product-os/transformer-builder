@@ -1,21 +1,9 @@
-name: l1-transformer
-type: type-product-os-t-service-source@1.5.1
-version: 0.2.0
+name: transformer-bundle
+loop: product-os
+type: transformer
+version: 1.0.0
 data:
-  $transformer: {}
-  platforms:
-    linux/amd64: {}
-  fragment:
-    type: transformer@1.0.0
-    data:
-      targetPlatform: linux/amd64
-      inputFilter:
-        type: object
-        required:
-          - type
-          - version
-        properties:
-          type:
-            pattern: transformer-bundle@*
-          version:
-            type: string
+  input:
+    - transformer-bundle
+  output:
+    - transformer

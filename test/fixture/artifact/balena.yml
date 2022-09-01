@@ -1,0 +1,32 @@
+name: hello-bundle
+loop: product-os
+type: transformer-bundle
+version: 1.0.0
+data:
+  transformers:
+  - name: hello-2-goodbye
+    data:
+      input:
+        - hello
+      output:
+        - goodbye
+  - name: thankyou-2-welcome
+    data:
+      input:
+        - thankyou
+      output:
+        - welcome
+# ---
+# name: hello-bundle
+# loop: product-os
+# type: transformer-bundle
+# version: 1.0.0
+# data:
+#   transformers:
+#   - name: hello-2-goodbye
+#     data:
+#       dockerfile: Dockerfile
+#       transforms:
+#         - hello
+#       creates:
+#         - goodbye

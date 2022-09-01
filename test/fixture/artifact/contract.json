@@ -1,0 +1,21 @@
+{
+  "name": "hello-bundle",
+  "loop": "product-os",
+  "type": "transformer-bundle",
+  "version": "1.0.0",
+  "data": {
+    "transformers": [
+      {
+        "name": "hello-2-goodbye",
+        "data": {
+          "transforms": [
+            "hello"
+          ],
+          "creates": [
+            "goodbye"
+          ]
+        }
+      }
+    ]
+  }
+}

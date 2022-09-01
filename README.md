@@ -1,7 +1,11 @@
-// import * as fs from 'fs';
-// import { YAML } from 'yaml';
+# L1 Transformer
 
-## How to define a transformer bundle of contracts
+## Introduction
+
+This transformer builds transformers from bundled transformer source.
+
+
+## How to define a bundle of transformer contracts
 - contracts.yml
     - can contain `type: type` or `type: transformer` contracts
     - contracts are seperated using the yaml document separator `---`
@@ -95,28 +99,37 @@
         type: { const: typeSlug@typeVersion }
     ```
 
-## Build transformers images
-- Options
-    - Use `zx`- 
-    - https://github.com/product-os/t-blueprint2keyframe-transformer/blob/master/lib/docker.ts
+## Configuration
 
-    
-    
-## Notes
+When using as a Github action, the transformer-builder can be configured using environment variables.
 
-### current slug implemenation
-slug: `${type}-${slugified(name)}`
+### Secrets
 
-### future slug
-slug: `${loop}/${type}/${handle}`
+The following secrets should be set by an Owner at the Organization level,
+but they can also be [configured for personal repositories](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
+
+These secrets can also be found at the top of [flowzone.yml](./.github/workflows/flowzone.yml).
+
+#### `REGISTRY_USERNAME`
+
+The username used for authenticating with the Docker registry.  Defaults to the Github username of the user that created the pull request which triggered this Github action.
+
+#### `REGISTRY_PASSWORD`
+
+The password used for authenticating with the Docker registry.  Defaults to the `GITHUB_TOKEN` secret which is automatically generated for each Github workflow run.
 
 
+### Other Configuration
 
+#### `DRYRUN`
 
-- Launch with just typescript support
-- bash stuff: install_packages then call script from typescript
-- Look into Repl.it
-- Camel-case the function name then snake-case the handle
-- Design-time script that generates interfaces in typescript
-- index.ts file should export transformer functions with Camel-case of transformer handle
-- No env var for input manifest. Should use absolute paths for manifest & artifacts
+Disables artifact uploading to the registry when `DRYRUN` is set to `true`. Defaults to `false`.
+
+#### `REGISTRY_HOSTNAME`
+
+The hostname of the Docker registry where artifacts and images will be uploaded to. Defaults to `ghcr.io`.
+
+#### `REGISTRY_PROTOCOL`
+
+The protocol used to upload artifacts or images to the Docker registry. Options are `https`, `http`, or `ssh`.  Defaults to `https`.
+
